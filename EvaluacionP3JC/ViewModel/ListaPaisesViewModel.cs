@@ -1,9 +1,12 @@
 ﻿using EvaluacionP3JC.Models;
 using EvaluacionP3JC.Repositories;
+using EvaluacionP3JC.Services;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -12,53 +15,57 @@ namespace EvaluacionP3JC.ViewModel
 {
     public class ListaPaisesViewModel : INotifyPropertyChanged
     {
-        private Country _model;
-        public Country Model
+        private readonly APIServiceJC _apiService;
+        private readonly Database _databaseService;
+
+        public ObservableCollection<Country> Countries { get; set; }
+
+        public ListaPaisesViewModel()
         {
-            get => _model;
-            set
+            _apiService = new APIServiceJC();
+            _databaseService = new Database(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "countries.db"));
+
+            Countries = new ObservableCollection<Country>();
+            LoadCountriesCommand = new Command(async () => await LoadCountriesAsync());
+            SaveCountryCommand = new Command<Country>(async (country) => await SaveCountryAsync(country));
+            UpdateCountryCommand = new Command<Country>(async (country) => await UpdateCountryAsync(country));
+            DeleteCountryCommand = new Command<Country>(async (country) => await DeleteCountryAsync(country));
+        }
+
+        public Command LoadCountriesCommand { get; }
+        public Command SaveCountryCommand { get; }
+        public Command UpdateCountryCommand { get; }
+        public Command DeleteCountryCommand { get; }
+
+        private async Task LoadCountriesAsync()
+        {
+            var countries = await _apiService.GetCountriesAsync();
+            foreach (var country in countries)
             {
-                if (_model != value)
-                {
-                    _model = value;
-                    OnPropertyChanged(nameof(Model));
-                }
+                await _databaseService.SaveCountryAsync(country);
+                Countries.Add(country);
             }
         }
 
-
-        public ICommand ComandoMostrarPais { get; }
-
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        private ListaPaisesViewModel() {
-            Model = new Country();
-
-            ComandoMostrarPais = new Command(async () => await CargarPais());
-
+        private async Task SaveCountryAsync(Country country)
+        {
+            await _databaseService.SaveCountryAsync(country);
         }
 
-        protected virtual void OnPropertyChanged(string propertyName = null)
+        private async Task UpdateCountryAsync(Country country)
+        {
+            await _databaseService.UpdateCountryAsync(country);
+        }
+
+        private async Task DeleteCountryAsync(Country country)
+        {
+            await _databaseService.DeleteCountryAsync(country);
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        private async Task CargarPais()
-        {
-            CountryRepo repo = new CountryRepo("COUNTRY.DB");
-
-            List<Country> countries = await repo.RetornarCountries();
-            Country country = countries.FirstOrDefault();
-            if (country != null)
-            {
-                Model.Name.Oficial = country.Name.Oficial;
-                Model.Region = country.Region;
-                Model.Region = country.Region;
-
-            }
-
-            OnPropertyChanged(nameof(Model));
         }
     }
 }

@@ -3,13 +3,13 @@
     x:Class="EvaluacionP3JC.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:EvaluacionP3JC"
+    xmlns:local="clr-namespace:EvaluacionP3JC.Views"
     Shell.FlyoutBehavior="Disabled"
     Title="EvaluacionP3JC">
 
     <ShellContent
         Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
+        ContentTemplate="{DataTemplate local:CountryView}"
         Route="MainPage" />
 
 </Shell>

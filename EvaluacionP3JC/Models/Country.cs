@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SQLite;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -9,9 +10,9 @@ namespace EvaluacionP3JC.Models
 {
     public class Country
     {
-        [Key]
+        [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
-        public Name Name { get; set; }
+        public string Name { get; set; }
         public string Region { get; set; }
         public string Subregion { get; set; }
         public string Status { get; set; }
