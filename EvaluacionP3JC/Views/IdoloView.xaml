@@ -3,23 +3,21 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:EvaluacionP3JC.ViewModel"
              x:Class="EvaluacionP3JC.Views.IdoloView"
-             Title="Favorite Character">
+             Title="Favorito Personaje">
 
     <ContentPage.BindingContext>
         <local:FavoriteCharacterViewModel />
     </ContentPage.BindingContext>
 
-    <StackLayout Padding="20">
-        <Image Source="{Binding FavoriteCharacter.ImageUrl}" WidthRequest="300" HeightRequest="300" />
+    <StackLayout>
+        <Image Source="{Binding FavoriteCharacter.ImageUrl}"  WidthRequest="300" HeightRequest="300"/>
+        <Label Text="{Binding FavoriteCharacter.Description}" />
 
-        <Entry Placeholder="Ingrese su descripción aquí..."
-               Text="{Binding FavoriteCharacter.Description}"
-               VerticalOptions="EndAndExpand" />
+        <!-- Entry para ingresar la nueva descripción -->
+        <Entry Placeholder="Nueva descripción" Text="{Binding NewDescription}" />
 
-        <Button Text="Guardar Descripción"
-                Command="{Binding GuardarDescripcionCommand}"
-                VerticalOptions="End"
-                HorizontalOptions="Center" />
+        <!-- Botón para guardar la descripción -->
+        <Button Text="Guardar Descripción" Command="{Binding SaveDescriptionCommand}" />
     </StackLayout>
 
 </ContentPage>
